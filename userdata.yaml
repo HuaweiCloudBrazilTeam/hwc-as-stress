@@ -1,0 +1,26 @@
+#cloud-config
+
+# Adaptado de https://github.com/Apress/pract-oracle-cloud-infrastructure/blob/master/chapter06/3-instance-scale-up/infrastructure/cloud-init/vm.config.yaml
+
+timezone: "America/Sao_Paulo"
+packages:
+ - htop
+ - stress-ng
+ - nginx
+write_files:
+-   content: |
+      [Unit]
+      Description = Simulate CPU Utilization
+      [Service]
+      ExecStart = /usr/bin/stress-ng -c 1 -l 90
+      User = root
+      [Install]
+      WantedBy = multi-user.target
+    path: /etc/systemd/system/stress.service
+runcmd:
+ -  [ "ln", "-s", "/etc/systemd/system/stress.service", "/etc/systemd/system/multi-user.target.wants/stress.service" ]
+ -  [ "systemctl", "enable", "stress.service" ]
+ -  [ "systemctl", "enable", "nginx.service" ]
+
+power_state:
+    mode: reboot
