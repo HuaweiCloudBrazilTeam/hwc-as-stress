@@ -4,7 +4,7 @@ resource "huaweicloud_as_configuration_v1" "as-config-app-example" {
   }
   scaling_configuration_name = "as-config-app-example"
   instance_config {
-    flavor = "s1.medium"
+    flavor = var.ecs_flavor
     image  = data.huaweicloud_images_image_v2.centos7.id
     disk {
       size        = 40
@@ -19,6 +19,7 @@ resource "huaweicloud_as_configuration_v1" "as-config-app-example" {
 resource "huaweicloud_as_group_v1" "asg-app-example" {
   scaling_group_name       = "asg-app-example"
   scaling_configuration_id = huaweicloud_as_configuration_v1.as-config-app-example.id
+  cool_down_time           = 30
   desire_instance_number   = 2
   min_instance_number      = 0
   max_instance_number      = 4
@@ -38,7 +39,7 @@ resource "huaweicloud_as_group_v1" "asg-app-example" {
 resource "huaweicloud_as_policy_v1" "as-policy-app-example-cpu50" {
   scaling_policy_name = "as-policy-app-example-cpu50"
   scaling_group_id    = huaweicloud_as_group_v1.asg-app-example.id
-  cool_down_time      = 900
+  cool_down_time      = 60
   scaling_policy_type = "ALARM"
   alarm_id            = huaweicloud_ces_alarmrule.alarm-asg-example-cpu50.id
   scaling_policy_action {
@@ -58,7 +59,7 @@ resource "huaweicloud_ces_alarmrule" "alarm-asg-example-cpu50" {
     }
   }
   condition {
-    period              = 300
+    period              = 60
     filter              = "average"
     comparison_operator = ">="
     value               = 60
@@ -70,5 +71,3 @@ resource "huaweicloud_ces_alarmrule" "alarm-asg-example-cpu50" {
     notification_list = []
   }
 }
-
-
