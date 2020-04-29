@@ -34,6 +34,11 @@ resource "huaweicloud_as_group_v1" "asg-app-example" {
   security_groups {
     id = huaweicloud_compute_secgroup_v2.sg-asg-app-example.id
   }
+
+  tags = {
+    foo = "bar"
+    key = "value"
+  }
 }
 
 resource "huaweicloud_as_policy_v1" "as-policy-app-example-cpu50" {
@@ -59,7 +64,7 @@ resource "huaweicloud_ces_alarmrule" "alarm-asg-example-cpu50" {
     }
   }
   condition {
-    period              = 60
+    period              = 300
     filter              = "average"
     comparison_operator = ">="
     value               = 60

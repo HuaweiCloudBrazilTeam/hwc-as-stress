@@ -1,13 +1,13 @@
+variable "domain_name" {
+  description = "Nome da conta da Huawei Cloud"
+}
+
 variable user_name {
   description = "Username da Huawei Cloud"
 }
 
 variable "password" {
   description = "Password da Huawei Cloud"
-}
-
-variable "domain_name" {
-  default = "ClaroCloudTest"
 }
 
 variable "tenant_name" {
